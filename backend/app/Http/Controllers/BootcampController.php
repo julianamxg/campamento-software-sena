@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bootcamp;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreBootcampRequest;
+use App\Http\Resources\BootCampResource;
+use App\Http\Resources\BootCampCollection;
 
 
 class BootcampController extends Controller
@@ -15,7 +19,11 @@ class BootcampController extends Controller
      */
     public function index()
     {
-        return Bootcamp::all();
+        //metodo json:
+        //parametros: 1. data a enviar al client
+        //              2. Codigo status http
+        return response()->json( new BootcampCollection(Bootcamp::all())
+                                , 200);
 
     }
 
@@ -25,13 +33,14 @@ class BootcampController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBootcampRequest $request)
     {
-        //1. Traer el payload
-        $datos=$request->all(); 
+        //1. Traer el payload 
         //2. Crea el nuevo bootcamp
-        Bootcamp::Create($datos);
-        return "bootcamp creado";
+        return response()->json([
+                                "success" => true,
+                                 "data" => new BootcampResource( 
+                                        Bootcamp::create($request->all())), 201]);
     }
 
     /**
@@ -42,7 +51,10 @@ class BootcampController extends Controller
      */
     public function show($id)
     {
-        return Bootcamp::find($id);
+        return response()->json([
+                                    "success" => true,
+                                    "data" => new BootcampResource(Bootcamp::find($id))
+       ], 200);
     }
 
     /**
@@ -54,13 +66,15 @@ class BootcampController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //1. Localizar el bootcamp con id
-        $b = Bootcamp::find($id);
-        //2. Actualizarlo con update
+       //1. localizar  el bootcamp con id
+       $b = Bootcamp::find($id);
+        // actualizar
         $b->update($request->all());
-        return "Bootcamp actualizado";
-    }
 
+        return response()->json( [ "success"=>true,
+                                    "data"=> new BootcampResource ($b)
+                                 ]  , 201);
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -69,8 +83,11 @@ class BootcampController extends Controller
      */
     public function destroy($id)
     {
-       $b=Bootcamp::find(1);
+       $b=Bootcamp::find($id);
        $b->delete();
-       return "Bootcamp eliminado";
+       return response()->json( [ "success"=>true,
+      
+                                 "data"=> $b
+                                 ], 200);
     }
 }

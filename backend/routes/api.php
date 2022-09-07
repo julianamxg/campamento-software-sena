@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BootcampController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,7 @@ Route::get('prueba', function(){
 Route::apiResource('bootcamps', BootcampController::class);
 
 Route::post('courses/{idbootcamp}/create', [CourseController::class, "store"]);
+
+Route::apiResource('courses', CourseController::class);
+
+Route::apiResource('reviews', ReviewController::class);

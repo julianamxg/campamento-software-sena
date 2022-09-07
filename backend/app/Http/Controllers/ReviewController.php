@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Course;
-use App\Http\Resources\CourseResource;
-use App\Http\Resources\CourseCollection;
+use App\Models\Review;
+use App\Http\Resources\ReviewResource;
+use App\Http\Resources\ReviewCollection;
 use App\Http\Controllers\BaseController;
 
-class CourseController extends BaseController
+class ReviewController extends BaseController
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -18,7 +18,7 @@ class CourseController extends BaseController
     public function index()
     {
         try {
-            return $this->sendResponse(new CourseCollection(Course::all()));
+            return $this->sendResponse(new ReviewCollection(Review::all()));
         } catch (\Exception $e) {
             return $this->sendError('Server error', 500);
         }
@@ -34,8 +34,8 @@ class CourseController extends BaseController
 
     {
         try {
-            return $this->sendResponse(new CourseResource( 
-              Course::create($request->all())), 201);
+            return $this->sendResponse(new ReviewResource( 
+                Review::create($request->all())), 201);
           } catch (\Exception $th) {
               return $this->sendError('Server error', 500);
           }
@@ -51,12 +51,12 @@ class CourseController extends BaseController
     {
         try{ 
             //1. Encontrar el Review por id
-            $course = Course::find($id);
+            $review = Review::find($id);
             //2. en caso de que el Review no exista
-            if(!$course){
-                return $this->sendError("course with id: $id not found", 400);
+            if(!$review){
+                return $this->sendError("Reviews with id: $id not found", 400);
             }
-            return $this->sendResponse(new CourseResource($course));
+            return $this->sendResponse(new ReviewResource($review));
         }catch(\Exception $e){
             return $this->sendError('Server error', 500);
             }
@@ -75,14 +75,14 @@ class CourseController extends BaseController
             //code...
        
        //1. localizar  el bootcamp con id
-       $b = Course::find($id);
+       $b = Review::find($id);
         // actualizar
         $b->update($request->all());
 
         if(!$b){
-            return $this->sendError("Course with id: $id not found", 400);
+            return $this->sendError("Review with id: $id not found", 400);
         }
-        return $this->sendResponse(new CourseResource($b));
+        return $this->sendResponse(new ReviewResource($b));
     }
  catch (\Exception $th) {
     return $this->sendError('Server error', 500);
@@ -98,13 +98,13 @@ class CourseController extends BaseController
     public function destroy($id)
     {
         try {
-            $b=Course::find($id);
+            $b=Review::find($id);
             $b->delete();
        if(!$b){
             return $this->sendError("Course with id: $id not found", 400);
         }
        
-        return $this->sendResponse(new CourseResource($b));
+        return $this->sendResponse(new ReviewResource($b));
         } catch (\Throwable $th) {
             return $this->sendError('Server error', 500);
         }
